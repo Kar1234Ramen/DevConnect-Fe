@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import UserCard from "../components/UserCard";
 const Feed = () => {
   const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
+  const [error, setError] = useState(false);
 
   const getFeed = async () => {
     if (feed) return;
@@ -19,6 +20,7 @@ const Feed = () => {
       dispatch(addFeed(res?.data));
     } catch (err) {
       //error handler
+      setError(true);
     }
   };
 
@@ -27,11 +29,22 @@ const Feed = () => {
   }, []);
 
   return (
-    feed && (
-      <div className="flex justify-center my-10">
-        <UserCard user={feed[0]} />
-      </div>
-    )
+    <div>
+      {feed && (
+        <div className="flex justify-center my-10">
+          <UserCard user={feed[0]} />
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center flex flex-col items-center justify-center h-screen">
+          <p className="text-white-500 mb-3">Failed to load feed!</p>
+          <button className="btn bg-white text-black btn-sm" onClick={getFeed}>
+            Refresh
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 
