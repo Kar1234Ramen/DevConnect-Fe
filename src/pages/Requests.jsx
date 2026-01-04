@@ -1,7 +1,88 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { BASE_URL } from "../utils/constants";
+import { addRequest } from "../utils/requestSlice";
 
 const Requests = () => {
-  return <div>Requests</div>;
+  const dispatch = useDispatch();
+  const requests = useSelector((store) => store.requests);
+  const [error, setError] = useState(false);
+
+  const fetchRequests = async () => {
+    if (requests) return;
+    try {
+      const res = await axios.get(BASE_URL + "/user/requests/recieved", {
+        withCredentials: true,
+      });
+      dispatch(addRequest(res?.data.data));
+      setError(false);
+    } catch (err) {
+      //error handler
+      setError(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  return (
+    <div className="my-10 px-4">
+      <h1 className="text-center font-bold text-2xl mb-6">Requests</h1>
+      {requests && (
+        <div className="flex justify-center">
+          <ul className="list bg-base-100 rounded-box shadow-md w-full max-w-2xl">
+            {requests.map((request) => {
+              const { _id, firstName, lastName, photoUrl, age, gender, about } =
+                request.fromUserId;
+
+              return (
+                <li key={_id} className="list-row">
+                  <div>
+                    <img
+                      alt="photo"
+                      className="size-10 rounded-box"
+                      src={photoUrl}
+                    />
+                  </div>
+
+                  <div>
+                    <div className="uppercase font-semibold">
+                      {firstName} {lastName}
+                    </div>
+                    {(age || gender) && (
+                      <div className="text-xs opacity-70">
+                        {age}, {gender}
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="list-col-wrap text-xs opacity-80">{about}</p>
+                  <div className="flex items-center gap-4">
+                    <button className="btn btn-primary ">Reject</button>
+                    <button className="btn btn-secondary ">Accept</button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center flex flex-col items-center justify-center h-screen">
+          <p className="text-white-500 mb-3">Failed to load connections!</p>
+          <button
+            className="btn bg-white text-black btn-sm"
+            onClick={fetchRequests}
+          >
+            Refresh
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Requests;
