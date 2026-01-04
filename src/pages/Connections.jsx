@@ -28,12 +28,15 @@ const Connections = () => {
     fetchConnections();
   }, []);
 
-  //if (connections.length === 0) return <h1>No Connections found</h1>;
-
   return (
     <div className="my-10 px-4">
       <h1 className="text-center font-bold text-2xl mb-6">Connections</h1>
-      {connections && (
+      {connections?.length === 0 && !error && (
+        <p className="text-center opacity-70 mt-10">
+          You don't have any connections yet 👋
+        </p>
+      )}
+      {connections?.length > 0 && (
         <div className="flex justify-center">
           <ul className="list bg-base-100 rounded-box shadow-md w-full max-w-2xl">
             {connections.map((connection) => {
