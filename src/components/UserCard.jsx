@@ -1,16 +1,22 @@
 import React from "react";
 
 const UserCard = ({ user }) => {
-  const { firstName, lastName, photoUrl, age, gender, about } = user;
+  const { firstName, lastName, photoUrl, age, gender, about, skills, emailId } =
+    user;
   console.log(user);
   return (
     <div className="card bg-base-300 w-96 shadow-sm">
-      <figure>
-        <img src={photoUrl} alt="Shoes" />
+      <figure className="aspect-[2/3] w-full overflow-hidden rounded-t-lg bg-neutral">
+        <img
+          src={photoUrl}
+          alt={`${firstName} ${lastName}`}
+          className="w-full h-full object-cover object-top"
+        />
       </figure>
+
       <div className="card-body">
         <h2 className="card-title">{firstName + " " + lastName}</h2>
-        {age && gender && <p>{age + ", " + gender}</p>}
+        {(age || gender) && <p>{age + ", " + gender}</p>}
         <p>{about}</p>
         <div className="card-actions justify-center my-4">
           <button className="btn btn-primary">Ignore</button>
