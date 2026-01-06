@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constants";
 import { addRequest, removeRequest } from "../utils/requestSlice";
+import { addConnections } from "../utils/connectionsSlice";
 
 const Requests = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,10 @@ const Requests = () => {
         { withCredentials: true }
       );
       dispatch(removeRequest(_id));
+
+      if (status === "accepted") {
+        dispatch(addConnections(null));
+      }
     } catch (err) {
       //error handler
     }
