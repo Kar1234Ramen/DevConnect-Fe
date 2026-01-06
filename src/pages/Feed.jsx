@@ -11,9 +11,9 @@ const Feed = () => {
   const [error, setError] = useState(false);
 
   const getFeed = async () => {
-    if (feed) return;
+    if (feed.length >= 5) return;
     try {
-      const res = await axios.get(BASE_URL + "/feed", {
+      const res = await axios.get(`${BASE_URL}/feed?limit=10`, {
         withCredentials: true,
       });
       console.log(res);
@@ -26,17 +26,19 @@ const Feed = () => {
 
   useEffect(() => {
     getFeed();
-  }, []);
+  }, [feed.length]);
+
+  if (feed.length == 0) {
+    return (
+      <div className="flex justify-center my-10">
+        <h1>No new users found!</h1>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {feed.length == 0 && (
-        <div className="flex justify-center my-10">
-          <h1>No new users found!</h1>
-        </div>
-      )}
-
-      {feed.length > 0 && (
+      {feed && (
         <div className="flex justify-center my-10">
           <UserCard user={feed[0]} />
         </div>
