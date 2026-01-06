@@ -6,14 +6,14 @@ import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/userSlice";
 
 const EditProfile = ({ user }) => {
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName);
-  const [emailId, setEmailId] = useState(user.emailId);
-  const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
-  const [gender, setGender] = useState(user.gender);
-  const [age, setAge] = useState(user.age);
-  const [about, setAbout] = useState(user.about);
-  const [skills, setSkills] = useState(user.skills.join(", "));
+  const [firstName, setFirstName] = useState(user?.firstName);
+  const [lastName, setLastName] = useState(user?.lastName);
+  const [emailId, setEmailId] = useState(user?.emailId);
+  const [photoUrl, setPhotoUrl] = useState(user?.photoUrl || "");
+  const [gender, setGender] = useState(user?.gender || "");
+  const [age, setAge] = useState(user?.age || "");
+  const [about, setAbout] = useState(user?.about || "");
+  const [skills, setSkills] = useState(user?.skills.join(", ") || "");
   const [error, setError] = useState("");
   const [toast, SetToast] = useState(false);
   const dispatch = useDispatch();
