@@ -1,5 +1,5 @@
 import Navbar from "./NavBar";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
@@ -10,9 +10,8 @@ import { useEffect } from "react";
 const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = useSelector((store) => {
-    store.user;
-  });
+  const location = useLocation();
+  const userData = useSelector((store) => store.user);
 
   const fetchUser = async () => {
     if (userData) return;
@@ -22,14 +21,20 @@ const Body = () => {
       });
       dispatch(addUser(res.data));
     } catch (err) {
-      navigate("/login");
-      console.log(err);
+      if (err.response?.status === 401) return;
+      if (location.pathname !== "/login") {
+        navigate("/login");
+      }
     }
   };
 
   useEffect(() => {
-    fetchUser();
-  }, []);
+    if (location.pathname === "/login") return;
+
+    if (!userData) {
+      fetchUser();
+    }
+  }, [location.pathname, userData]);
 
   return (
     <div>
