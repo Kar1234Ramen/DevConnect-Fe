@@ -21,7 +21,6 @@ const Body = () => {
       });
       dispatch(addUser(res.data));
     } catch (err) {
-      if (err.response?.status === 401) return;
       if (location.pathname !== "/login") {
         navigate("/login");
       }
