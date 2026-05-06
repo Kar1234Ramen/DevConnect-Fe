@@ -5,6 +5,20 @@ import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
+const passwordRules = [
+  { label: "At least 8 characters", test: (p) => p.length >= 8 },
+  { label: "At least one uppercase letter", test: (p) => /[A-Z]/.test(p) },
+  { label: "One lowercase letter", test: (p) => /[a-z]/.test(p) },
+  { label: "One number", test: (p) => /[0-9]/.test(p) },
+  {
+    label: "One special character",
+    test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p),
+  },
+];
+
+const isPasswordValid = (password) =>
+  passwordRules.every((rule) => rule.test(password));
+
 const Login = () => {
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
@@ -36,6 +50,10 @@ const Login = () => {
 
   const signUpHandler = async () => {
     try {
+      if (!isPasswordValid(password)) {
+        setError("Password does not meet the required criteria");
+        return;
+      }
       const res = await axios.post(
         BASE_URL + "/signup",
         {
@@ -50,7 +68,7 @@ const Login = () => {
       return navigate("/profile");
     } catch (err) {
       //error handler
-      setError(err.response?.data?.message || err.message);
+      setError(err.response?.data?.message || "Signup failed");
     }
   };
 
@@ -110,13 +128,13 @@ const Login = () => {
               />
             </label>
           </div>
-          <div className="pt-2 pb-2">
+          <div className="pt-2">
             <label className="form-control w-full max-w-xs">
               <div className="label">
                 <span className="label-text">Password</span>
               </div>
               <input
-                type="text"
+                type="password"
                 value={password}
                 className="input input-bordered w-full max-w-xs"
                 onChange={(e) => {
@@ -124,6 +142,21 @@ const Login = () => {
                 }}
               />
             </label>
+            {!isLogin && password && (
+              <ul className="text-sm mt-2">
+                {passwordRules.map((rule, index) => {
+                  const valid = rule.test(password);
+                  return (
+                    <li
+                      key={index}
+                      className={valid ? "text-green-500" : "text-red-500"}
+                    >
+                      {valid ? "✔" : "✖"} {rule.label}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
           {error && <p className="text-red-500">{error}</p>}
           <div className="card-actions justify-center m-2">
