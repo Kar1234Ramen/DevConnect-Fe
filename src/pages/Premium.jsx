@@ -1,6 +1,46 @@
 import React from "react";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
 const Premium = () => {
+  const buyMembershipHandler = async (type) => {
+    try {
+      const order = await axios.post(
+        BASE_URL + "/payment/create",
+        {
+          membershipType: type,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      //open the razorpay dialouge box
+      const { keyId, amount, currency, notes, orderId } = order.data;
+
+      const options = {
+        key: keyId, // Replace with your Razorpay key_id
+        amount: amount, // Amount is in currency subunits.
+        currency: currency,
+        name: "DevConnect",
+        description: "Connect with developers",
+        order_id: orderId, // This is the order_id created in the backend
+        prefill: {
+          name: notes.firstName + " " + notes.lastName,
+          email: notes.emailId,
+        },
+        theme: {
+          color: "#F37254",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      //set a error box
+    }
+  };
+
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center p-10">
       <div className="flex flex-col gap-10 md:flex-row  w-full max-w-5xl">
@@ -17,7 +57,12 @@ const Premium = () => {
             <li>✔ 90 days access</li>
           </ul>
 
-          <button className="btn btn-secondary w-full">Buy Now</button>
+          <button
+            onClick={() => buyMembershipHandler("silver")}
+            className="btn btn-secondary w-full"
+          >
+            Buy Now
+          </button>
         </div>
 
         {/* OR Divider */}
@@ -38,7 +83,12 @@ const Premium = () => {
             <li>✔ 180 days access</li>
           </ul>
 
-          <button className="btn btn-primary w-full">Buy Now</button>
+          <button
+            onClick={() => buyMembershipHandler("gold")}
+            className="btn btn-primary w-full"
+          >
+            Buy Now
+          </button>
         </div>
       </div>
     </div>
