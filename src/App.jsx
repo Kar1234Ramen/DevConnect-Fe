@@ -8,6 +8,7 @@ import appStore from "./utils/appStore";
 import Connections from "./pages/Connections";
 import Requests from "./pages/Requests";
 import Premium from "./pages/Premium";
+import Chat from "./pages/Chat";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <Route path="/connections" element={<Connections />} />
               <Route path="/requests" element={<Requests />} />
               <Route path="/premium" element={<Premium />} />
+              <Route path="/chat/:targetUserId" element={<Chat />} />
             </Route>
           </Routes>
         </BrowserRouter>
