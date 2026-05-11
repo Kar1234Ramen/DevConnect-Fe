@@ -7,6 +7,6 @@ export const createSocketConnection = () => {
       withCredentials: true,
     });
   } else {
-    return io("/", { path: "/api/socket.io" });
+    return io("/", { path: "/api/socket.io", withCredentials: true });
   }
 };
